@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rakesh Vadnala | IAM Consultant</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #0f0f0f;
+    --surface2: #141414;
+    --border: #1e2e1e;
+    --border2: #2a3d2a;
+    --green: #00ff41;
+    --green2: #00cc33;
+    --green-dim: rgba(0,255,65,0.6);
+    --green-muted: rgba(0,255,65,0.35);
+    --green-faint: rgba(0,255,65,0.07);
+    --amber: #ffb700;
+    --cyan: #00e5ff;
+    --text: #c8ffc8;
+    --text2: rgba(180,240,180,0.75);
+    --text3: rgba(140,200,140,0.45);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 40px 24px 80px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Scanlines overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,65,0.015) 2px, rgba(0,255,65,0.015) 4px);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* CRT vignette */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.6) 100%);
+    pointer-events: none; z-index: 0;
+  }
+
+  .page-wrap { max-width: 1080px; margin: 0 auto; position: relative; z-index: 1; }
+
+  /* BOOT LINE */
+  .boot-line {
+    font-size: 11px; color: var(--text3); letter-spacing: 0.08em;
+    margin-bottom: 20px; display: flex; gap: 16px; align-items: center;
+  }
+  .boot-line span { color: var(--green2); }
+  .boot-cursor { display: inline-block; width: 8px; height: 14px; background: var(--green); animation: blink 1s step-end infinite; vertical-align: middle; margin-left: 4px; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* FAB */
+  .fab-group { position: fixed; top: 24px; right: 24px; z-index: 1000; display: flex; gap: 10px; }
+  .fab {
+    display: flex; align-items: center; gap: 8px; padding: 9px 16px;
+    border: 1px solid var(--border2); background: var(--surface);
+    color: var(--green); font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    font-weight: 500; cursor: pointer; transition: all 0.15s; border-radius: 3px;
+    box-shadow: 0 0 12px rgba(0,255,65,0.08), inset 0 0 0 0 rgba(0,255,65,0);
+    letter-spacing: 0.04em;
+  }
+  .fab:hover { background: rgba(0,255,65,0.08); border-color: var(--green); box-shadow: 0 0 20px rgba(0,255,65,0.2); color: var(--green); }
+  .fab i { font-size: 12px; }
+
+  /* HEADER */
+  .header-card {
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    padding: 0;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--green), var(--green2), transparent);
+    box-shadow: 0 0 12px var(--green);
+  }
+  .header-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    background: rgba(0,255,65,0.04); border-bottom: 1px solid var(--border);
+    padding: 8px 20px; font-size: 11px; color: var(--text3); letter-spacing: 0.06em;
+  }
+  .header-bar .dots { display: flex; gap: 6px; }
+  .header-bar .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .header-bar .dot-r { background: #ff5f56; }
+  .header-bar .dot-y { background: #febc2e; }
+  .header-bar .dot-g { background: #28c840; }
+  .header-content {
+    display: flex; justify-content: space-between; align-items: center; padding: 32px 28px;
+  }
+  .header-left h1 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 34px; font-weight: 700; color: var(--green);
+    letter-spacing: -0.5px; line-height: 1.1;
+    text-shadow: 0 0 20px rgba(0,255,65,0.4);
+    margin-bottom: 8px;
+  }
+  .header-left h1::before { content: '> '; color: var(--text3); font-size: 24px; }
+  .prompt-line {
+    font-size: 12px; color: var(--text3); letter-spacing: 0.06em;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .prompt-line::before { content: '$'; color: var(--green2); }
+  .prompt-text { color: var(--text2); }
+  .prompt-tag {
+    display: inline-block; padding: 2px 8px; border: 1px solid var(--green-muted);
+    background: var(--green-faint); color: var(--green2); border-radius: 2px; font-size: 11px;
+    letter-spacing: 0.08em;
+  }
+  .header-right { text-align: right; display: flex; flex-direction: column; gap: 5px; }
+  .contact-item {
+    display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+    font-size: 12px; color: var(--text2); text-decoration: none; transition: color 0.15s;
+    letter-spacing: 0.04em;
+  }
+  .contact-item:hover { color: var(--green); text-shadow: 0 0 8px rgba(0,255,65,0.4); }
+  .contact-item i { color: var(--green-muted); font-size: 11px; width: 14px; text-align: center; }
+
+  /* GRID */
+  .resume-grid { display: grid; grid-template-columns: 1fr 270px; gap: 14px; }
+  .left-col { display: flex; flex-direction: column; gap: 14px; }
+  .right-col { display: flex; flex-direction: column; gap: 14px; }
+
+  /* CARD */
+  .card {
+    border: 1px solid var(--border2); background: var(--surface);
+    padding: 22px 24px; position: relative; overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; bottom: 0; width: 2px;
+    background: linear-gradient(180deg, var(--green), transparent);
+    opacity: 0.4;
+  }
+  .card:hover { border-color: var(--green-muted); box-shadow: 0 0 20px rgba(0,255,65,0.06), inset 0 0 40px rgba(0,255,65,0.02); }
+  .card:hover::before { opacity: 1; }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--green); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-title::before { content: '//'; color: var(--text3); font-size: 13px; letter-spacing: -2px; }
+  .section-title::after { content: ''; flex:1; height: 1px; background: linear-gradient(90deg, var(--border2), transparent); }
+
+  /* SUMMARY */
+  .summary-text { font-size: 13px; line-height: 1.9; color: var(--text2); }
+  .summary-text strong { color: var(--green); font-weight: 600; }
+
+  .stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 18px; }
+  .stat-box {
+    border: 1px solid var(--border2); padding: 12px;
+    text-align: center; background: var(--green-faint);
+    position: relative; overflow: hidden;
+  }
+  .stat-box::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(0,255,65,0.03), transparent);
+  }
+  .stat-num { font-size: 22px; font-weight: 700; color: var(--green); line-height: 1; text-shadow: 0 0 12px rgba(0,255,65,0.5); }
+  .stat-label { font-size: 10px; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 4px; }
+
+  /* XP */
+  .xp-item { margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+  .xp-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .xp-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 3px; }
+  .xp-title { font-size: 14px; font-weight: 600; color: var(--green); }
+  .xp-date { font-size: 11px; color: var(--text3); }
+  .xp-company { font-size: 11px; color: var(--cyan); margin-bottom: 8px; letter-spacing: 0.05em; }
+  .xp-company::before { content: '@ '; color: var(--text3); }
+
+  /* LIST */
+  .skill-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .skill-list li { font-size: 12.5px; color: var(--text2); line-height: 1.65; padding-left: 16px; position: relative; }
+  .skill-list li::before { content: '>'; position: absolute; left: 0; color: var(--green2); font-size: 11px; top: 1px; }
+
+  /* TECH BARS */
+  .tech-row { display: flex; align-items: center; gap: 8px; margin-bottom: 9px; }
+  .tech-name { font-size: 11px; color: var(--text2); min-width: 100px; letter-spacing: 0.04em; }
+  .tech-bar-track { flex: 1; height: 3px; background: var(--border2); overflow: hidden; }
+  .tech-bar-fill { height: 100%; background: linear-gradient(90deg, var(--green2), var(--green)); box-shadow: 0 0 6px rgba(0,255,65,0.4); }
+  .tech-pct { font-size: 10px; color: var(--text3); min-width: 30px; text-align: right; }
+
+  /* BADGES */
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; }
+  .badge {
+    padding: 4px 9px; font-size: 11px; font-weight: 500; letter-spacing: 0.05em;
+    border: 1px solid; transition: all 0.15s; cursor: default;
+  }
+  .badge:hover { box-shadow: 0 0 8px rgba(0,255,65,0.2); }
+  .badge-green { background: rgba(0,255,65,0.05); border-color: rgba(0,255,65,0.2); color: var(--green2); }
+  .badge-cyan { background: rgba(0,229,255,0.05); border-color: rgba(0,229,255,0.2); color: var(--cyan); }
+  .badge-amber { background: rgba(255,183,0,0.05); border-color: rgba(255,183,0,0.2); color: var(--amber); }
+  .badge-dim { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.1); color: var(--text2); }
+
+  /* LANG PILLS */
+  .lang-pill {
+    display: flex; align-items: center; gap: 10px; padding: 7px 12px;
+    background: var(--green-faint); border: 1px solid var(--border2); margin-bottom: 7px;
+    font-size: 12px; color: var(--text2); letter-spacing: 0.04em; transition: all 0.15s;
+  }
+  .lang-pill:hover { border-color: var(--green-muted); color: var(--green); }
+  .lang-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+  @media (max-width: 820px) {
+    .resume-grid { grid-template-columns: 1fr; }
+    .header-content { flex-direction: column; gap: 20px; align-items: flex-start; }
+    .header-right { text-align: left; }
+    .contact-item { justify-content: flex-start; }
+    .fab-group { top: 12px; right: 12px; }
+    .fab span { display: none; }
+  }
+
+  @media print {
+    .fab-group { display: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="fab-group">
+  <button class="fab" onclick="exportPDF()"><i class="fa-solid fa-file-arrow-down"></i><span>Export PDF</span></button>
+</div>
+
+<div class="page-wrap">
+
+  <div class="boot-line">
+    <span>SYS</span> identity_access_management.profile —— v2.5 ——
+    <span>STATUS: ACTIVE</span> · Dubai, UAE
+    <span class="boot-cursor"></span>
+  </div>
+
+  <div class="header-card">
+    <div class="header-bar">
+      <div class="dots">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+      </div>
+      <span>rakesh_vadnala@rns-tech:~$ cat profile.json</span>
+      <span>UTF-8</span>
+    </div>
+    <div class="header-content">
+      <div class="header-left">
+        <h1>Rakesh Vadnala</h1>
+        <div class="prompt-line">
+          <span class="prompt-text">role=</span><span class="prompt-tag">IAM Technical Consultant</span>
+          <span class="prompt-text" style="margin-left:6px">platform=</span><span class="prompt-tag">SailPoint IIQ</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <a class="contact-item" href="#"><i class="fa-solid fa-location-dot"></i> Dubai, UAE</a>
+        <a class="contact-item" href="mailto:rakeshvadnala@gmail.com"><i class="fa-solid fa-envelope"></i> rakeshvadnala@gmail.com</a>
+        <a class="contact-item" href="https://linkedin.com/in/rakeshvadnala" target="_blank"><i class="fa-brands fa-linkedin"></i> linkedin.com/in/rakeshvadnala</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="resume-grid" id="resume">
+    <div class="left-col">
+
+      <div class="card">
+        <div class="section-title">profile</div>
+        <p class="summary-text">IAM professional with <strong>5+ years</strong> of progressive experience — Intern to Technical Consultant at <strong>RNS Technology Services</strong>. Expert in <strong>SailPoint IdentityIQ</strong>, Active Directory, and enterprise integrations, delivering secure identity governance across India and the UAE. Banking, Telecom, Defence, and Healthcare sectors served.</p>
+        <div class="stats-row">
+          <div class="stat-box"><div class="stat-num">5+</div><div class="stat-label">yrs_exp</div></div>
+          <div class="stat-box"><div class="stat-num">10+</div><div class="stat-label">projects</div></div>
+          <div class="stat-box"><div class="stat-num">4</div><div class="stat-label">sectors</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">employment</div>
+        <div class="xp-item">
+          <div class="xp-header"><span class="xp-title">IAM Technical Consultant</span><span class="xp-date">2024 — present</span></div>
+          <div class="xp-company">RNS Technology Services</div>
+          <ul class="skill-list">
+            <li>Lead technical consulting for enterprise IAM deployments across UAE.</li>
+            <li>Architect and deliver SailPoint IIQ solutions for banking and defence clients.</li>
+          </ul>
+        </div>
+        <div class="xp-item">
+          <div class="xp-header"><span class="xp-title">Associate IAM Consultant</span><span class="xp-date">2021 — 2024</span></div>
+          <div class="xp-company">RNS Technology Services</div>
+          <ul class="skill-list">
+            <li>Configured SailPoint IIQ workflows, rules, and certifications.</li>
+            <li>Delivered JML lifecycle automation and RBAC implementations.</li>
+          </ul>
+        </div>
+        <div class="xp-item">
+          <div class="xp-header"><span class="xp-title">IAM Intern</span><span class="xp-date">2021</span></div>
+          <div class="xp-company">RNS Technology Services</div>
+          <ul class="skill-list">
+            <li>Supported connector config, identity aggregation, and provisioning.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">technical_skills</div>
+        <ul class="skill-list">
+          <li>Deployment, implementation, and customization of SailPoint IdentityIQ across enterprise environments.</li>
+          <li>Identity Governance: JML, access requests, certifications, provisioning, RBAC, workflows, policy enforcement.</li>
+          <li>Custom rules, forms, workflows, and access certification configuration in IIQ.</li>
+          <li>SAML, SSO, Java, Web Services, SoD, auditing, custom reporting, connector development.</li>
+          <li>Troubleshooting complex integrations across heterogeneous enterprise systems.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="section-title">integrations_dev</div>
+        <ul class="skill-list">
+          <li>Custom IdentityIQ connectors for banking and enterprise applications.</li>
+          <li>ServiceNow ITSM integration — access request, approval, fulfillment automation.</li>
+          <li>Event-driven and workflow-based provisioning/deprovisioning integrations.</li>
+          <li>REST and SOAP-based real-time provisioning across heterogeneous systems.</li>
+          <li>Custom BeanShell/Java rules for attribute transformation and entitlement mapping.</li>
+          <li>SAML-based SSO and API token-based authentication for external systems.</li>
+          <li>Multi-site identity integrations via secure cloud gateway architecture.</li>
+          <li>Batch processing, throttling, incremental aggregation for performance.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="section-title">key_projects[]</div>
+        <div class="badges">
+          <span class="badge badge-green">JML_lifecycle_automation</span>
+          <span class="badge badge-green">access_request_mgmt</span>
+          <span class="badge badge-cyan">rbac_design</span>
+          <span class="badge badge-cyan">app_onboarding_AD_LDAP</span>
+          <span class="badge badge-amber">compliance_SOX_ISO_GDPR</span>
+          <span class="badge badge-amber">provisioning_engine</span>
+          <span class="badge badge-dim">sod_policy_analysis</span>
+          <span class="badge badge-dim">custom_plugin_REST_API</span>
+          <span class="badge badge-green">audit_dashboard</span>
+          <span class="badge badge-cyan">iam_migration_upgrades</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="right-col">
+
+      <div class="card">
+        <div class="section-title">core_skills</div>
+        <div class="tech-row"><span class="tech-name">SailPoint IIQ</span><div class="tech-bar-track"><div class="tech-bar-fill" style="width:95%"></div></div><span class="tech-pct">95%</span></div>
+        <div class="tech-row"><span class="tech-name">JML / RBAC</span><div class="tech-bar-track"><div class="tech-bar-fill" style="width:92%"></div></div><span class="tech-pct">92%</span></div>
+        <div class="tech-row"><span class="tech-name">Workflows</span><div class="tech-bar-track"><div class="tech-bar-fill" style="width:90%"></div></div><span class="tech-pct">90%</span></div>
+        <div class="tech-row"><span class="tech-name">SCIM / REST</span><div class="tech-bar-track"><div class="tech-bar-fill" style="width:85%"></div></div><span class="tech-pct">85%</span></div>
+        <div class="tech-row"><span class="tech-name">SAML / SSO</span><div class="tech-bar-track"><div class="tech-bar-fill" style="width:85%"></div></div><span class="tech-pct">85%</span></div>
+        <div class="tech-row"><span class="tech-name">Active Dir.</span><div class="tech-bar-track"><div class="tech-bar-fill" style="width:88%"></div></div><span class="tech-pct">88%</span></div>
+        <div class="tech-row"><span class="tech-name">ServiceNow</span><div class="tech-bar-track"><div class="tech-bar-fill" style="width:78%"></div></div><span class="tech-pct">78%</span></div>
+        <div class="tech-row"><span class="tech-name">Saviynt</span><div class="tech-bar-track"><div class="tech-bar-fill" style="width:70%"></div></div><span class="tech-pct">70%</span></div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">tech_stack</div>
+        <div class="badges">
+          <span class="badge badge-green">SailPoint</span>
+          <span class="badge badge-dim">Saviynt</span>
+          <span class="badge badge-green">Active Directory</span>
+          <span class="badge badge-amber">Linux</span>
+          <span class="badge badge-cyan">Splunk</span>
+          <span class="badge badge-dim">ServiceNow</span>
+          <span class="badge badge-green">LDAP</span>
+          <span class="badge badge-amber">JDBC</span>
+          <span class="badge badge-cyan">REST API</span>
+          <span class="badge badge-dim">SOAP</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">languages[]</div>
+        <div class="lang-pill"><div class="lang-dot" style="background:#f0a500;box-shadow:0 0 6px #f0a500"></div>Java</div>
+        <div class="lang-pill"><div class="lang-dot" style="background:#00ff41;box-shadow:0 0 6px #00ff41"></div>BeanShell (IIQ)</div>
+        <div class="lang-pill"><div class="lang-dot" style="background:#4ade80;box-shadow:0 0 6px #4ade80"></div>Python</div>
+        <div class="lang-pill"><div class="lang-dot" style="background:#00e5ff;box-shadow:0 0 6px #00e5ff"></div>XML / JSON</div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">sectors</div>
+        <div class="badges">
+          <span class="badge badge-amber">banking</span>
+          <span class="badge badge-cyan">telecom</span>
+          <span class="badge badge-green">defence</span>
+          <span class="badge badge-dim">healthcare</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">compliance</div>
+        <div class="badges">
+          <span class="badge badge-amber">SOX</span>
+          <span class="badge badge-cyan">ISO_27001</span>
+          <span class="badge badge-green">GDPR</span>
+          <span class="badge badge-dim">SoD_policies</span>
+          <span class="badge badge-green">RBAC_gov</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function exportPDF() {
+  const btn = document.querySelector('.fab-group');
+  btn.style.display = 'none';
+
+  const style = document.createElement('style');
+  style.id = 'pdf-override';
+  style.textContent = `
+    body { background: #0a0a0a !important; }
+    body::before, body::after { display: none !important; }
+    .card { box-shadow: none !important; }
+  `;
+  document.head.appendChild(style);
+
+  const element = document.getElementById('resume');
+  const opt = {
+    margin: [8,8,8,8],
+    filename: 'Rakesh_Vadnala_IAM_Resume_Terminal.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, scrollY: 0, useCORS: true, backgroundColor: '#0a0a0a' },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+  };
+  html2pdf().set(opt).from(element).save().then(() => {
+    document.getElementById('pdf-override').remove();
+    btn.style.display = 'flex';
+  });
+}
+</script>
+</body>
+</html>
